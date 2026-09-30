@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Horloge Universelle - AMATH SALL</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at top, #243b67, #0b1020 55%, #050812);
+    padding: 25px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* TITRE */
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: clamp(30px, 6vw, 58px);
+}
+
+header p {
+    color: #9eacc7;
+    margin-top: 10px;
+}
+
+/* HORLOGE */
+
+.clock {
+    position: relative;
+    width: min(420px, 90vw);
+    height: min(420px, 90vw);
+    margin: auto;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle,
+            #172641 0%,
+            #101a30 58%,
+            #273d62 59%,
+            #0a1020 67%,
+            #172744 100%
+        );
+
+    border: 10px solid #334a70;
+
+    box-shadow:
+        0 0 0 5px #050912,
+        0 25px 70px rgba(0,0,0,.7),
+        inset 0 0 40px rgba(0,0,0,.8);
+}
+
+/* MARQUES */
+
+.mark {
+    position: absolute;
+    width: 4px;
+    height: 15px;
+    background: #dce7fa;
+    left: 50%;
+    top: 8px;
+    transform-origin: 50% calc(210px - 8px);
+    border-radius: 5px;
+}
+
+/* CHIFFRES */
+
+.number {
+    position: absolute;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.n12 {
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.n3 {
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.n6 {
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.n9 {
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* AIGUILLES */
+
+.hand {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate(0deg);
+    border-radius: 10px;
+}
+
+.hour {
+    width: 10px;
+    height: 25%;
+    background: white;
+}
+
+.minute {
+    width: 6px;
+    height: 35%;
+    background: #65a7ff;
+}
+
+.second {
+    width: 3px;
+    height: 40%;
+    background: #ff5360;
+}
+
+.center {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ff5360;
+    border: 4px solid white;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+}
+
+/* DIGITAL */
+
+.digital {
+    position: absolute;
+    left: 50%;
+    bottom: 24%;
+    transform: translateX(-50%);
+
+    padding: 8px 15px;
+
+    border-radius: 10px;
+
+    background: rgba(0,0,0,.35);
+
+    font-size: 20px;
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+/* DATE */
+
+.date {
+    text-align: center;
+    margin: 25px 0;
+    color: #aab7ce;
+}
+
+/* CONTROLES */
+
+.controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+input,
+select,
+button {
+    min-height: 46px;
+    border-radius: 10px;
+    border: 1px solid #344b73;
+    background: #101a30;
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+input {
+    flex: 1;
+    min-width: 220px;
+}
+
+button {
+    cursor: pointer;
+    background: #1d5fba;
+    border-color: #327bdc;
+    transition: .2s;
+}
+
+button:hover {
+    background: #2874d0;
+    transform: translateY(-2px);
+}
+
+/* VILLES */
+
+.cities {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+}
+
+.city {
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(39,61,96,.85),
+            rgba(12,19,35,.95)
+        );
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    box-shadow: 0 15px 35px rgba(0,0,0,.25);
+
+    transition: .25s;
+}
+
+.city:hover {
+    transform: translateY(-5px);
+    border-color: #4f8fe9;
+}
+
+.city h2 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.country {
+    color: #8e9db8;
+    margin-top: 5px;
+}
+
+.city-time {
+    font-size: 31px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.city-date {
+    color: #8e9db8;
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+.zone {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: rgba(65,140,230,.15);
+    color: #72adff;
+    font-size: 12px;
+}
+
+/* MOBILE */
+
+@media(max-width:500px) {
+
+    body {
+        padding: 15px;
+    }
+
+    .clock {
+        border-width: 7px;
+    }
+
+    .number {
+        font-size: 21px;
+    }
+
+    .n12 {
+        top: 22px;
+    }
+
+    .n3 {
+        right: 22px;
+    }
+
+    .n6 {
+        bottom: 22px;
+    }
+
+    .n9 {
+        left: 22px;
+    }
+
+    .digital {
+        font-size: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <h1>🌍 Horloge Universelle</h1>
+    <p>Créée par <strong>AMATH SALL</strong></p>
+</header>
+
+<!-- HORLOGE PRINCIPALE -->
+
+<div class="clock">
+
+    <!-- Repères -->
+    <div class="mark" style="transform:translateX(-50%) rotate(0deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(30deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(60deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(90deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(120deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(150deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(180deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(210deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(240deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(270deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(300deg)"></div>
+    <div class="mark" style="transform:translateX(-50%) rotate(330deg)"></div>
+
+    <div class="number n12">12</div>
+    <div class="number n3">3</div>
+    <div class="number n6">6</div>
+    <div class="number n9">9</div>
+
+    <div id="hour" class="hand hour"></div>
+    <div id="minute" class="hand minute"></div>
+    <div id="second" class="hand second"></div>
+
+    <div class="center"></div>
+
+    <div id="digital" class="digital">
+        00:00:00
+    </div>
+
+</div>
+
+<div id="date" class="date">
+    Chargement...
+</div>
+
+<!-- CONTROLES -->
+
+<div class="controls">
+
+    <input
+        id="search"
+        type="search"
+        placeholder="🔎 Rechercher une ville..."
+    >
+
+    <select id="format">
+        <option value="24">24 heures</option>
+        <option value="12">12 heures</option>
+    </select>
+
+    <button id="soundButton">
+        🔊 Activer le tic-tac
+    </button>
+
+</div>
+
+<!-- VILLES -->
+
+<div id="cities" class="cities"></div>
+
+</div>
+
+
+<script>
+
+/* =================================
+   VILLES
+================================= */
+
+const cities = [
+
+    {
+        name: "Dakar",
+        country: "🇸🇳 Sénégal",
+        zone: "Africa/Dakar"
+    },
+
+    {
+        name: "Paris",
+        country: "🇫🇷 France",
+        zone: "Europe/Paris"
+    },
+
+    {
+        name: "Londres",
+        country: "🇬🇧 Royaume-Uni",
+        zone: "Europe/London"
+    },
+
+    {
+        name: "New York",
+        country: "🇺🇸 États-Unis",
+        zone: "America/New_York"
+    },
+
+    {
+        name: "Los Angeles",
+        country: "🇺🇸 États-Unis",
+        zone: "America/Los_Angeles"
+    },
+
+    {
+        name: "São Paulo",
+        country: "🇧🇷 Brésil",
+        zone: "America/Sao_Paulo"
+    },
+
+    {
+        name: "Le Caire",
+        country: "🇪🇬 Égypte",
+        zone: "Africa/Cairo"
+    },
+
+    {
+        name: "Dubai",
+        country: "🇦🇪 Émirats arabes unis",
+        zone: "Asia/Dubai"
+    },
+
+    {
+        name: "Tokyo",
+        country: "🇯🇵 Japon",
+        zone: "Asia/Tokyo"
+    },
+
+    {
+        name: "Pékin",
+        country: "🇨🇳 Chine",
+        zone: "Asia/Shanghai"
+    },
+
+    {
+        name: "Singapour",
+        country: "🇸🇬 Singapour",
+        zone: "Asia/Singapore"
+    },
+
+    {
+        name: "Sydney",
+        country: "🇦🇺 Australie",
+        zone: "Australia/Sydney"
+    }
+
+];
+
+
+/* =================================
+   ELEMENTS
+================================= */
+
+const hourHand = document.getElementById("hour");
+const minuteHand = document.getElementById("minute");
+const secondHand = document.getElementById("second");
+
+const digital = document.getElementById("digital");
+const dateElement = document.getElementById("date");
+
+const citiesContainer = document.getElementById("cities");
+
+const search = document.getElementById("search");
+const format = document.getElementById("format");
+
+const soundButton =
+    document.getElementById("soundButton");
+
+
+/* =================================
+   SON TIC-TAC
+================================= */
+
+let soundEnabled = false;
+let audioContext = null;
+
+
+/*
+    Création d'un petit son
+    d'horloge mécanique.
+*/
+
+function playTick() {
+
+    if (!soundEnabled) {
+        return;
+    }
+
+    if (!audioContext) {
+        audioContext =
+            new (window.AudioContext ||
+                 window.webkitAudioContext)();
+    }
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gain =
+        audioContext.createGain();
+
+    oscillator.type = "sine";
+
+    oscillator.frequency.setValueAtTime(
+        850,
+        audioContext.currentTime
+    );
+
+    gain.gain.setValueAtTime(
+        0.0001,
+        audioContext.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.08,
+        audioContext.currentTime + 0.01
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        audioContext.currentTime + 0.09
+    );
+
+    oscillator.connect(gain);
+
+    gain.connect(
+        audioContext.destination
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime + 0.1
+    );
+}
+
+
+/*
+    Activation / désactivation
+*/
+
+soundButton.addEventListener(
+    "click",
+    async () => {
+
+        if (!audioContext) {
+
+            audioContext =
+                new (window.AudioContext ||
+                     window.webkitAudioContext)();
+
+        }
+
+        if (audioContext.state === "suspended") {
+            await audioContext.resume();
+        }
+
+        soundEnabled = !soundEnabled;
+
+        if (soundEnabled) {
+
+            soundButton.textContent =
+                "🔇 Désactiver le tic-tac";
+
+            playTick();
+
+        } else {
+
+            soundButton.textContent =
+                "🔊 Activer le tic-tac";
+
+        }
+
+    }
+);
+
+
+/* =================================
+   FORMAT HEURE
+================================= */
+
+function getTime(zone) {
+
+    return new Intl.DateTimeFormat(
+        "fr-FR",
+        {
+            timeZone: zone,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: format.value === "12"
+        }
+    ).format(new Date());
+
+}
+
+
+/* =================================
+   DATE
+================================= */
+
+function getDate(zone) {
+
+    return new Intl.DateTimeFormat(
+        "fr-FR",
+        {
+            timeZone: zone,
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        }
+    ).format(new Date());
+
+}
+
+
+/* =================================
+   DECALAGE UTC
+================================= */
+
+function getOffset(zone) {
+
+    try {
+
+        const parts =
+            new Intl.DateTimeFormat(
+                "fr-FR",
+                {
+                    timeZone: zone,
+                    timeZoneName: "shortOffset"
+                }
+            ).formatToParts(new Date());
+
+        const part =
+            parts.find(
+                item =>
+                    item.type === "timeZoneName"
+            );
+
+        return part ? part.value : "";
+
+    } catch {
+
+        return "";
+
+    }
+
+}
+
+
+/* =================================
+   GRANDE HORLOGE
+================================= */
+
+function updateMainClock() {
+
+    const now = new Date();
+
+    const milliseconds =
+        now.getMilliseconds();
+
+    const seconds =
+        now.getSeconds() +
+        milliseconds / 1000;
+
+    const minutes =
+        now.getMinutes() +
+        seconds / 60;
+
+    const hours =
+        (now.getHours() % 12) +
+        minutes / 60;
+
+
+    const secondAngle =
+        seconds * 6;
+
+    const minuteAngle =
+        minutes * 6;
+
+    const hourAngle =
+        hours * 30;
+
+
+    hourHand.style.transform =
+        `translateX(-50%) rotate(${hourAngle}deg)`;
+
+    minuteHand.style.transform =
+        `translateX(-50%) rotate(${minuteAngle}deg)`;
+
+    secondHand.style.transform =
+        `translateX(-50%) rotate(${secondAngle}deg)`;
+
+
+    digital.textContent =
+        new Intl.DateTimeFormat(
+            "fr-FR",
+            {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: format.value === "12"
+            }
+        ).format(now);
+
+
+    dateElement.textContent =
+        new Intl.DateTimeFormat(
+            "fr-FR",
+            {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        ).format(now);
+
+}
+
+
+/* =================================
+   AFFICHER LES VILLES
+================================= */
+
+function renderCities() {
+
+    const query =
+        search.value
+            .trim()
+            .toLowerCase();
+
+
+    citiesContainer.innerHTML = "";
+
+
+    cities
+        .filter(city =>
+            city.name
+                .toLowerCase()
+                .includes(query)
+            ||
+            city.country
+                .toLowerCase()
+                .includes(query)
+        )
+        .forEach(city => {
+
+            const element =
+                document.createElement("div");
+
+            element.className = "city";
+
+
+            element.innerHTML = `
+
+                <h2>
+                    🌐 ${city.name}
+                </h2>
+
+                <div class="country">
+                    ${city.country}
+                </div>
+
+                <div
+                    class="city-time"
+                    data-zone="${city.zone}"
+                >
+                    ${getTime(city.zone)}
+                </div>
+
+                <div
+                    class="city-date"
+                    data-date-zone="${city.zone}"
+                >
+                    ${getDate(city.zone)}
+                </div>
+
+                <span class="zone">
+                    ${getOffset(city.zone)}
+                </span>
+
+            `;
+
+
+            citiesContainer.appendChild(element);
+
+        });
+
+}
+
+
+/* =================================
+   ACTUALISATION
+================================= */
+
+function updateCities() {
+
+    document
+        .querySelectorAll("[data-zone]")
+        .forEach(element => {
+
+            element.textContent =
+                getTime(
+                    element.dataset.zone
+                );
+
+        });
+
+
+    document
+        .querySelectorAll("[data-date-zone]")
+        .forEach(element => {
+
+            element.textContent =
+                getDate(
+                    element.dataset.dateZone
+                );
+
+        });
+
+}
+
+
+/* =================================
+   RECHERCHE
+================================= */
+
+search.addEventListener(
+    "input",
+    renderCities
+);
+
+
+/* =================================
+   CHANGEMENT FORMAT
+================================= */
+
+format.addEventListener(
+    "change",
+    () => {
+
+        updateMainClock();
+        renderCities();
+
+    }
+);
+
+
+/* =================================
+   TIC-TAC CHAQUE SECONDE
+================================= */
+
+let lastSecond = -1;
+
+function clockLoop() {
+
+    const now = new Date();
+
+    if (now.getSeconds() !== lastSecond) {
+
+        lastSecond =
+            now.getSeconds();
+
+        playTick();
+
+    }
+
+    updateMainClock();
+
+    updateCities();
+
+    requestAnimationFrame(
+        clockLoop
+    );
+
+}
+
+
+/* =================================
+   DEMARRAGE
+================================= */
+
+renderCities();
+
+clockLoop();
+
+</script>
+
+</body>
+</html>
