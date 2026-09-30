@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horloge Universelle</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, #263b66 0%, #10182d 42%, #070b16 100%);
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding: 30px 15px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+}
+
+/* TITRE */
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: clamp(30px, 5vw, 55px);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #aebbd4;
+    font-size: 16px;
+}
+
+/* HORLOGE PRINCIPALE */
+
+.main-clock {
+    width: min(430px, 90vw);
+    aspect-ratio: 1;
+    margin: 0 auto 35px;
+    border-radius: 50%;
+    position: relative;
+
+    background:
+        radial-gradient(circle, #182746 0 57%, #0c1427 58% 70%, #26395d 71% 73%, #080d19 74%);
+
+    border: 10px solid #314567;
+
+    box-shadow:
+        0 0 0 4px #080d18,
+        0 25px 70px rgba(0,0,0,.6),
+        inset 0 0 35px rgba(0,0,0,.8);
+}
+
+/* petits repères */
+
+.main-clock::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    background:
+        repeating-conic-gradient(
+            from 0deg,
+            rgba(255,255,255,.8) 0deg 1deg,
+            transparent 1deg 6deg
+        );
+    -webkit-mask: radial-gradient(
+        circle,
+        transparent 0 82%,
+        black 83% 85%,
+        transparent 86%
+    );
+    mask: radial-gradient(
+        circle,
+        transparent 0 82%,
+        black 83% 85%,
+        transparent 86%
+    );
+}
+
+/* chiffres */
+
+.number {
+    position: absolute;
+    font-size: 27px;
+    font-weight: bold;
+    color: #e9f1ff;
+}
+
+.n12 { top: 24px; left: 50%; transform: translateX(-50%); }
+.n3 { right: 28px; top: 50%; transform: translateY(-50%); }
+.n6 { bottom: 24px; left: 50%; transform: translateX(-50%); }
+.n9 { left: 28px; top: 50%; transform: translateY(-50%); }
+
+/* aiguilles */
+
+.hand {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transform-origin: bottom center;
+    border-radius: 20px;
+    transform: translateX(-50%) rotate(0deg);
+}
+
+.hour {
+    width: 9px;
+    height: 27%;
+    background: white;
+}
+
+.minute {
+    width: 6px;
+    height: 36%;
+    background: #68a7ff;
+}
+
+.second {
+    width: 2px;
+    height: 40%;
+    background: #ff5964;
+}
+
+.center-dot {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #ff5964;
+    border: 4px solid white;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+/* DIGITAL */
+
+.digital {
+    position: absolute;
+    bottom: 27%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.15);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* DATE */
+
+.date {
+    text-align: center;
+    margin-top: -15px;
+    margin-bottom: 35px;
+    color: #aebbd4;
+    font-size: 16px;
+}
+
+/* OUTILS */
+
+.tools {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.search {
+    flex: 1;
+    min-width: 220px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid #354a70;
+    background: rgba(10,17,32,.7);
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+.search:focus {
+    border-color: #68a7ff;
+}
+
+select {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid #354a70;
+    background: #101a31;
+    color: white;
+    font-size: 16px;
+}
+
+/* VILLES */
+
+.cities {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+}
+
+.city-card {
+    background: linear-gradient(
+        145deg,
+        rgba(38,57,91,.8),
+        rgba(13,21,39,.9)
+    );
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px;
+    padding: 22px;
+
+    box-shadow: 0 15px 35px rgba(0,0,0,.25);
+
+    transition: .25s;
+}
+
+.city-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(104,167,255,.5);
+}
+
+.city-name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.country {
+    color: #8998b5;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.city-time {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 15px;
+    letter-spacing: 1px;
+}
+
+.city-date {
+    color: #9eabc1;
+    margin-top: 6px;
+    font-size: 13px;
+}
+
+.offset {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: rgba(104,167,255,.12);
+    color: #79b0ff;
+    font-size: 12px;
+}
+
+/* MOBILE */
+
+@media (max-width: 500px) {
+
+    body {
+        padding: 20px 10px;
+    }
+
+    .main-clock {
+        border-width: 7px;
+    }
+
+    .number {
+        font-size: 21px;
+    }
+
+    .n12 { top: 18px; }
+    .n3 { right: 20px; }
+    .n6 { bottom: 18px; }
+    .n9 { left: 20px; }
+
+    .digital {
+        font-size: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <h1>🌍 Horloge Universelle</h1>
+    <p>Le temps du monde en un seul endroit</p>
+</header>
+
+<!-- GRANDE HORLOGE -->
+
+<div class="main-clock">
+
+    <div class="number n12">12</div>
+    <div class="number n3">3</div>
+    <div class="number n6">6</div>
+    <div class="number n9">9</div>
+
+    <div id="hourHand" class="hand hour"></div>
+    <div id="minuteHand" class="hand minute"></div>
+    <div id="secondHand" class="hand second"></div>
+
+    <div class="center-dot"></div>
+
+    <div id="digital" class="digital">
+        00:00:00
+    </div>
+
+</div>
+
+<div id="date" class="date">
+    Chargement...
+</div>
+
+<!-- RECHERCHE -->
+
+<div class="tools">
+
+    <input
+        id="search"
+        class="search"
+        type="text"
+        placeholder="🔎 Rechercher une ville..."
+    >
+
+    <select id="format">
+        <option value="24">Format 24h</option>
+        <option value="12">Format 12h</option>
+    </select>
+
+</div>
+
+<!-- VILLES -->
+
+<div id="cities" class="cities"></div>
+
+</div>
+
+<script>
+
+/* ================================
+   VILLES
+================================ */
+
+const cities = [
+
+    {
+        name: "Dakar",
+        country: "Sénégal",
+        zone: "Africa/Dakar"
+    },
+
+    {
+        name: "Paris",
+        country: "France",
+        zone: "Europe/Paris"
+    },
+
+    {
+        name: "Londres",
+        country: "Royaume-Uni",
+        zone: "Europe/London"
+    },
+
+    {
+        name: "New York",
+        country: "États-Unis",
+        zone: "America/New_York"
+    },
+
+    {
+        name: "Los Angeles",
+        country: "États-Unis",
+        zone: "America/Los_Angeles"
+    },
+
+    {
+        name: "São Paulo",
+        country: "Brésil",
+        zone: "America/Sao_Paulo"
+    },
+
+    {
+        name: "Dubai",
+        country: "Émirats arabes unis",
+        zone: "Asia/Dubai"
+    },
+
+    {
+        name: "Tokyo",
+        country: "Japon",
+        zone: "Asia/Tokyo"
+    },
+
+    {
+        name: "Pékin",
+        country: "Chine",
+        zone: "Asia/Shanghai"
+    },
+
+    {
+        name: "Singapour",
+        country: "Singapour",
+        zone: "Asia/Singapore"
+    },
+
+    {
+        name: "Sydney",
+        country: "Australie",
+        zone: "Australia/Sydney"
+    },
+
+    {
+        name: "Le Caire",
+        country: "Égypte",
+        zone: "Africa/Cairo"
+    }
+
+];
+
+
+/* ================================
+   ELEMENTS
+================================ */
+
+const hourHand = document.getElementById("hourHand");
+const minuteHand = document.getElementById("minuteHand");
+const secondHand = document.getElementById("secondHand");
+
+const digital = document.getElementById("digital");
+const dateElement = document.getElementById("date");
+
+const citiesContainer = document.getElementById("cities");
+
+const search = document.getElementById("search");
+const format = document.getElementById("format");
+
+
+/* ================================
+   FORMAT DE L'HEURE
+================================ */
+
+function getTime(zone) {
+
+    return new Intl.DateTimeFormat(
+        "fr-FR",
+        {
+            timeZone: zone,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: format.value === "12"
+        }
+    ).format(new Date());
+
+}
+
+
+/* ================================
+   DATE
+================================ */
+
+function getDate(zone) {
+
+    return new Intl.DateTimeFormat(
+        "fr-FR",
+        {
+            timeZone: zone,
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        }
+    ).format(new Date());
+
+}
+
+
+/* ================================
+   DECALAGE UTC
+================================ */
+
+function getOffset(zone) {
+
+    try {
+
+        const parts = new Intl.DateTimeFormat(
+            "en-US",
+            {
+                timeZone: zone,
+                timeZoneName: "shortOffset"
+            }
+        ).formatToParts(new Date());
+
+        const part = parts.find(
+            p => p.type === "timeZoneName"
+        );
+
+        return part ? part.value : "";
+
+    } catch {
+
+        return "";
+
+    }
+
+}
+
+
+/* ================================
+   HORLOGE PRINCIPALE
+================================ */
+
+function updateMainClock() {
+
+    const now = new Date();
+
+    const milliseconds = now.getMilliseconds();
+
+    const seconds =
+        now.getSeconds() +
+        milliseconds / 1000;
+
+    const minutes =
+        now.getMinutes() +
+        seconds / 60;
+
+    const hours =
+        (now.getHours() % 12) +
+        minutes / 60;
+
+
+    const secondAngle = seconds * 6;
+
+    const minuteAngle = minutes * 6;
+
+    const hourAngle = hours * 30;
+
+
+    secondHand.style.transform =
+        `translateX(-50%) rotate(${secondAngle}deg)`;
+
+    minuteHand.style.transform =
+        `translateX(-50%) rotate(${minuteAngle}deg)`;
+
+    hourHand.style.transform =
+        `translateX(-50%) rotate(${hourAngle}deg)`;
+
+
+    digital.textContent =
+        new Intl.DateTimeFormat(
+            "fr-FR",
+            {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: format.value === "12"
+            }
+        ).format(now);
+
+
+    dateElement.textContent =
+        new Intl.DateTimeFormat(
+            "fr-FR",
+            {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        ).format(now);
+
+}
+
+
+/* ================================
+   VILLES
+================================ */
+
+function renderCities() {
+
+    const query =
+        search.value.trim().toLowerCase();
+
+
+    citiesContainer.innerHTML = "";
+
+
+    cities
+        .filter(city =>
+            city.name
+                .toLowerCase()
+                .includes(query)
+            ||
+            city.country
+                .toLowerCase()
+                .includes(query)
+        )
+        .forEach(city => {
+
+            const card =
+                document.createElement("div");
+
+            card.className = "city-card";
+
+
+            card.innerHTML = `
+
+                <div class="city-name">
+                    🌐 ${city.name}
+                </div>
+
+                <div class="country">
+                    ${city.country}
+                </div>
+
+                <div
+                    class="city-time"
+                    data-zone="${city.zone}"
+                >
+                    ${getTime(city.zone)}
+                </div>
+
+                <div
+                    class="city-date"
+                    data-date-zone="${city.zone}"
+                >
+                    ${getDate(city.zone)}
+                </div>
+
+                <span class="offset">
+                    ${getOffset(city.zone)}
+                </span>
+
+            `;
+
+
+            citiesContainer.appendChild(card);
+
+        });
+
+}
+
+
+/* ================================
+   MISE À JOUR
+================================ */
+
+function updateEverything() {
+
+    updateMainClock();
+
+
+    document
+        .querySelectorAll("[data-zone]")
+        .forEach(element => {
+
+            element.textContent =
+                getTime(element.dataset.zone);
+
+        });
+
+
+    document
+        .querySelectorAll("[data-date-zone]")
+        .forEach(element => {
+
+            element.textContent =
+                getDate(element.dataset.dateZone);
+
+        });
+
+}
+
+
+/* ================================
+   EVENEMENTS
+================================ */
+
+search.addEventListener(
+    "input",
+    renderCities
+);
+
+
+format.addEventListener(
+    "change",
+    () => {
+
+        renderCities();
+        updateMainClock();
+
+    }
+);
+
+
+/* ================================
+   DEMARRAGE
+================================ */
+
+renderCities();
+
+updateEverything();
+
+
+setInterval(
+    updateEverything,
+    1000
+);
+
+</script>
+
+</body>
+</html>
